@@ -10,7 +10,7 @@ Independent harness for reproducing output divergence in float32 computation acr
 >
 > The historical CPU manifests remain in the `historical/` directory for record only. The divergence they showed was likely caused by the harness fault, not hardware.
 >
-> The GPU findings below were reproduced across three machines. The manifests are in `cuda/manifests/`.
+> The GPU findings below were reproduced across three machines (two Tesla T4 instances, one RTX 3050). The manifests are in `cuda/manifests/`.
 
 ---
 
@@ -112,7 +112,7 @@ Three machines: two Google Colab Tesla T4 instances and one local RTX 3050. Six 
 | `fma_no_fma` | `-O2 fat --fmad=false` | `80d7301c...` | `80d7301c...` |
 | `fast_on` | `-O2 fat -DUSE_FAST` | `743d2d5f...` | `743d2d5f...` |
 | `fast_off` | `-O2 fat` | `cbe5cea0...` | `cbe5cea0...` |
-| `reduction_tree` | `fat -DTREE_REDUCTION` | `37d5c6b3...` | `37d5c6b3...` (100 of 100 runs) |
+| `reduction_tree` | `fat -DTREE_REDUCTION` | `37d5c6b3...` | `37d5c6b3...` (10 runs + 10 invocations) |
 | `reduction_atomic` | `fat -DATOMIC_REDUCTION` | 10 unique / 10 runs (`colab_atomic_hashes.txt`, host fcd2464a08ac) | 9 unique / 10 runs (`atomic_hashes.txt`, Prime) |
 
 ### Deterministic kernels
@@ -125,9 +125,9 @@ On the same GPU, the FMA and fast-math kernels produce different hashes when the
 
 ### Atomic reduction
 
-Non-deterministic at 1,000,000 elements. On the RTX 3050, 10 runs produced 9 unique hashes (`cuda/atomic_hashes.txt`). On the Tesla T4, 10 runs produced 10 unique hashes (`cuda/colab_atomic_hashes.txt`).
+Non-deterministic at 1,000,000 elements. On the RTX 3050, 10 runs produced 9 unique hashes (`cuda/atomic_hashes.txt`). On the Tesla T4, 10 runs produced 10 unique hashes (`cuda/colab_atomic_hashes.txt`). The atomic test was run on the T4 host `fcd2464a08ac`, which is one of the two T4 sessions recorded as `Colab_gpu1` and `Colab_gpu2` in the manifests. The manifests were generated across two T4 sessions and the local RTX 3050.
 
-The 10-run atomic test on Colab was run on host `fcd2464a08ac` on November 3, 2026 (IST; the host clock header in the hashes file reads November 2, 2026, UTC). The other T4 instance (`gpu2`) only contributed manifests for the deterministic kernels and a single atomic run.
+The atomic test was run on November 3, 2026 (IST; the host clock header in the hashes file reads November 2, 2026, UTC).
 
 ### Tree reduction
 
