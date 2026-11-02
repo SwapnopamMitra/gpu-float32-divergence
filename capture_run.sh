@@ -46,6 +46,10 @@ fi
 if [ -n "$ARTIFACT_FILE" ] && [ -f "$ARTIFACT_FILE" ]; then
     rm -f "$ARTIFACT_FILE"
 fi
+if [ -z "$ARTIFACT_FILE" ] && [ -f "float_output.bin" ]; then
+    rm -f "float_output.bin"
+fi
+[ -f "hash_output.txt" ] && rm -f "hash_output.txt"
 
 # Run
 START=$(date +%s.%N)
@@ -57,6 +61,7 @@ STDOUT_HASH=$(sha256sum "$STDOUT_FILE" | cut -d' ' -f1)
 
 # Resolve result
 if [ -n "$ARTIFACT_FILE" ]; then
+    # GPU Mode (explicit artifact)
     if [ ! -f "$ARTIFACT_FILE" ]; then
         echo "ERROR: --artifact ${ARTIFACT_FILE} was specified but not produced." >&2
         exit 1
@@ -66,7 +71,24 @@ if [ -n "$ARTIFACT_FILE" ]; then
     RESULT_FILE="$ARTIFACT_COPY"
     RESULT_HASH=$(sha256sum "$ARTIFACT_COPY" | cut -d' ' -f1)
     RESULT_KIND="artifact_file"
+elif [ -f "float_output.bin" ] || [ -f "hash_output.txt" ]; then
+    # CPU Mode (implicit fallback for old divergence_demo.sh)
+    OUTPUT_HASH=""
+    if [ -f "hash_output.txt" ]; then
+        OUTPUT_HASH=$(cat "hash_output.txt" | tr -d ' \n')
+    fi
+    ARTIFACT_COPY="artifact_${NODE_LABEL}_float_output.bin"
+    cp "float_output.bin" "$ARTIFACT_COPY"
+    RESULT_FILE="$ARTIFACT_COPY"
+    
+    if [ -n "$OUTPUT_HASH" ] && [ ${#OUTPUT_HASH} -eq 64 ]; then
+        RESULT_HASH="$OUTPUT_HASH"
+    else
+        RESULT_HASH=$(sha256sum "$ARTIFACT_COPY" | cut -d' ' -f1)
+    fi
+    RESULT_KIND="artifact_file"
 else
+    # Stdout Mode
     RESULT_FILE="$STDOUT_FILE"
     RESULT_HASH="$STDOUT_HASH"
     RESULT_KIND="stdout"
@@ -101,3 +123,4 @@ cat > "$MANIFEST" <<EOF
 EOF
 
 echo "wrote ${MANIFEST}"
+cat "$MANIFEST"

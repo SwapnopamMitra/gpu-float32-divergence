@@ -1,0 +1,17 @@
+[
+  {
+    "ubuntu_version": "20.04",
+    "glibc_version": "2.31",
+    "output_sha256": "b73b2b34de638cb2e85b21397ce137c8794b33dce2da65b094165ff5150e94ae"
+  },
+  {
+    "ubuntu_version": "22.04",
+    "glibc_version": "2.35",
+    "output_sha256": "b73b2b34de638cb2e85b21397ce137c8794b33dce2da65b094165ff5150e94ae"
+  },
+  {
+    "ubuntu_version": "24.04",
+    "glibc_version": "2.39",
+    "output_sha256": "b73b2b34de638cb2e85b21397ce137c8794b33dce2da65b094165ff5150e94ae"
+  }
+]

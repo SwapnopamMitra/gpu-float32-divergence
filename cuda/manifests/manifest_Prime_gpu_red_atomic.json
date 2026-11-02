@@ -1,6 +1,6 @@
 {
   "node_label": "Prime_gpu_red_atomic",
-  "timestamp_utc": "2026-11-02T12:06:54Z",
+  "timestamp_utc": "2026-11-02T12:41:10Z",
   "kernel": "Linux 6.6.87.2-microsoft-standard-WSL2 x86_64 GNU/Linux",
   "cpu_model": "12th Gen Intel(R) Core(TM) i5-12450HX",
   "cpu_flags_hash": "30b1dc55582542703bd2fa559c340863ba6780fe0104b54e828092f1897ad37c",
@@ -9,13 +9,13 @@
   "cuda_version": "13.0",
   "command": "./bin/reduction_atomic big_test.bin output_big/reduction_run_1.bin ",
   "binary_path": "./bin/reduction_atomic",
-  "binary_sha256": "d3fc8c5d7617a0c3b23b2102bd511f22d85ecff7c75cd1604620b740ec03f05e",
+  "binary_sha256": "2c40b11eb45c24a0a77057d1530925c1e273bfb690ac4c5abb8faf13ecf256c1",
   "input_file": "big_test.bin",
   "input_sha256": "606718c45400af4047e4a2cb9f1e2ba31d688f2aa19fbd2ff6f6a8d2ea1634e7",
-  "elapsed_seconds": ".228696205",
+  "elapsed_seconds": ".191722147",
   "result_kind": "artifact_file",
   "result_file": "artifact_Prime_gpu_red_atomic_reduction_run_1.bin",
-  "raw_output_sha256": "009730d8267e6b999fe0038dc3d03ca8e01649f01faf6bcb7067876d04194939",
+  "raw_output_sha256": "d2b5e86f353964598f1a0f79c9c3f063f1eb5d9f17e4885684449fbb28323599",
   "stdout_file": "output_Prime_gpu_red_atomic.stdout",
-  "stdout_sha256": "22213185df039cfe9d3ec915d0e964d0971cfe8ff9d185a8df88874c049374b2"
+  "stdout_sha256": "bba1603f5e23bb515f526e73f97208151325773abca4684fa5e9d5938da646de"
 }
