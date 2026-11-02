@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
-# capture_run.sh - Fixed version
-
 set -euo pipefail
 
 NODE_LABEL="$1"; shift
 INPUT_FILE="$1"; shift
 
+ARTIFACT_FILE=""
+if [ "${1:-}" = "--artifact" ]; then
+    shift
+    ARTIFACT_FILE="$1"; shift
+fi
+
 if [ "${1:-}" != "--" ]; then
-    echo "expected -- before command" >&2
+    echo "expected -- before command (or --artifact <file> -- before command)" >&2
     exit 1
 fi
 shift
@@ -39,9 +43,9 @@ else
 fi
 
 # Clear stale artifacts
-ARTIFACT_FILE="float_output.bin"
-[ -f "$ARTIFACT_FILE" ] && rm -f "$ARTIFACT_FILE"
-[ -f "hash_output.txt" ] && rm -f "hash_output.txt"
+if [ -n "$ARTIFACT_FILE" ] && [ -f "$ARTIFACT_FILE" ]; then
+    rm -f "$ARTIFACT_FILE"
+fi
 
 # Run
 START=$(date +%s.%N)
@@ -49,32 +53,28 @@ START=$(date +%s.%N)
 END=$(date +%s.%N)
 ELAPSED=$(echo "$END - $START" | bc 2>/dev/null || echo "unknown")
 
-# Read the FULL SHA256 from hash_output.txt (written by divergence_demo.sh)
-OUTPUT_HASH=""
-if [ -f "hash_output.txt" ]; then
-    OUTPUT_HASH=$(cat "hash_output.txt" | tr -d ' \n')
-fi
+STDOUT_HASH=$(sha256sum "$STDOUT_FILE" | cut -d' ' -f1)
 
-# If we have the artifact, copy and hash it
-if [ -f "$ARTIFACT_FILE" ]; then
+# Resolve result
+if [ -n "$ARTIFACT_FILE" ]; then
+    if [ ! -f "$ARTIFACT_FILE" ]; then
+        echo "ERROR: --artifact ${ARTIFACT_FILE} was specified but not produced." >&2
+        exit 1
+    fi
     ARTIFACT_COPY="artifact_${NODE_LABEL}_$(basename "$ARTIFACT_FILE")"
     cp "$ARTIFACT_FILE" "$ARTIFACT_COPY"
     RESULT_FILE="$ARTIFACT_COPY"
-    
-    # Use the full hash from hash_output.txt, or compute it
-    if [ -n "$OUTPUT_HASH" ] && [ ${#OUTPUT_HASH} -eq 64 ]; then
-        RESULT_HASH="$OUTPUT_HASH"
-    else
-        RESULT_HASH=$(sha256sum "$ARTIFACT_COPY" | cut -d' ' -f1)
-    fi
+    RESULT_HASH=$(sha256sum "$ARTIFACT_COPY" | cut -d' ' -f1)
     RESULT_KIND="artifact_file"
 else
     RESULT_FILE="$STDOUT_FILE"
-    RESULT_HASH=$(sha256sum "$STDOUT_FILE" | cut -d' ' -f1)
+    RESULT_HASH="$STDOUT_HASH"
     RESULT_KIND="stdout"
 fi
 
-STDOUT_HASH=$(sha256sum "$STDOUT_FILE" | cut -d' ' -f1)
+# GPU info
+GPU_MODEL=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null | head -1 || echo "")
+CUDA_VER=$(nvcc --version 2>/dev/null | grep release | sed 's/.*release //' | cut -d, -f1 || echo "")
 
 cat > "$MANIFEST" <<EOF
 {
@@ -84,6 +84,8 @@ cat > "$MANIFEST" <<EOF
   "cpu_model": "${CPU_MODEL}",
   "cpu_flags_hash": "${CPU_FLAGS_HASH}",
   "glibc_version": "$(echo "$GLIBC_VER" | head -1)",
+  "gpu_model": "${GPU_MODEL}",
+  "cuda_version": "${CUDA_VER}",
   "command": "$(printf '%s ' "${CMD[@]}")",
   "binary_path": "${BIN_PATH}",
   "binary_sha256": "${BIN_HASH}",
@@ -99,4 +101,3 @@ cat > "$MANIFEST" <<EOF
 EOF
 
 echo "wrote ${MANIFEST}"
-cat "$MANIFEST"
