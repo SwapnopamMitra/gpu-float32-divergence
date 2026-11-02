@@ -1,4 +1,4 @@
-# divergence-verifier
+# gpu-float32-divergence
 
 Independent harness for reproducing output divergence in float32 computation across commodity hardware.
 
@@ -52,7 +52,7 @@ The GPU harness uses only standard CUDA intrinsics and compiler flags. It does n
 ## Repository contents
 
 ```text
-divergence-verifier/
+gpu-float32-divergence/
 ├── README.md
 ├── LICENSE
 ├── capture_run.sh                  # fingerprints binary + input + output, writes manifest
