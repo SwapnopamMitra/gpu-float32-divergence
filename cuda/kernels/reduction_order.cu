@@ -16,20 +16,16 @@ __global__ void kernel_reduce(const float *in, float *out, int n) {
         if (tid < s) sdata[tid] += sdata[tid + s];
         __syncthreads();
     }
-    if (tid == 0) atomicAdd(out, sdata[0]);
+    // Write block result to global memory at the block index
+    if (tid == 0) out[blockIdx.x] = sdata[0];
     
 #elif defined(ATOMIC_REDUCTION)
-    // Cast to volatile to force the compiler to actually emit the atomic instruction
-    // and not optimize the floating-point race condition away.
     volatile float* v_out = out;
     
     if (i < n) {
-        // Introduce microscopic scheduling jitter based on thread/warp ID.
-        // This forces different blocks to arrive at the memory controller out of order.
         if ((tid + blockIdx.x) % 32 == 0) {
             __nanosleep(10); 
         }
-        
         atomicAdd((float*)v_out, in[i]);
     }
 #endif
@@ -49,22 +45,39 @@ int main(int argc, char **argv) {
     if (fread(host_in, 1, len, f) != (size_t)len) { fclose(f); return 1; }
     fclose(f);
 
-    float *d_in, *d_sum;
-    cudaMalloc(&d_in,  n * sizeof(float));
-    cudaMalloc(&d_sum, sizeof(float));
-    cudaMemcpy(d_in, host_in, n * sizeof(float), cudaMemcpyHostToDevice);
-
     int threads = 256;
     int blocks  = (n + threads - 1) / threads;
     size_t shmem = threads * sizeof(float);
 
-    float h_sum = 0.0f;
-    cudaMemcpy(d_sum, &h_sum, sizeof(float), cudaMemcpyHostToDevice);
+    float *d_in, *d_out;
+    cudaMalloc(&d_in,  n * sizeof(float));
+    
+    // Allocate memory for the block results on GPU
+    cudaMalloc(&d_out, blocks * sizeof(float));
+    cudaMemcpy(d_in, host_in, n * sizeof(float), cudaMemcpyHostToDevice);
 
-    kernel_reduce<<<blocks, threads, shmem>>>(d_in, d_sum, n);
+    // Initialize output buffer to 0
+    cudaMemset(d_out, 0, blocks * sizeof(float));
+
+    kernel_reduce<<<blocks, threads, shmem>>>(d_in, d_out, n);
     cudaDeviceSynchronize();
 
-    cudaMemcpy(&h_sum, d_sum, sizeof(float), cudaMemcpyDeviceToHost);
+    float h_sum = 0.0f;
+    
+#ifdef TREE_REDUCTION
+    // Copy all block results back to CPU
+    float *h_blocks = (float*)malloc(blocks * sizeof(float));
+    cudaMemcpy(h_blocks, d_out, blocks * sizeof(float), cudaMemcpyDeviceToHost);
+    
+    // Sum them sequentially on the host to guarantee determinism
+    for (int i = 0; i < blocks; i++) {
+        h_sum += h_blocks[i];
+    }
+    free(h_blocks);
+#else
+    // For atomic, the final answer is already in d_out[0]
+    cudaMemcpy(&h_sum, d_out, sizeof(float), cudaMemcpyDeviceToHost);
+#endif
 
     FILE *o = fopen(outpath, "wb");
     fwrite(&h_sum, sizeof(float), 1, o);
@@ -73,7 +86,7 @@ int main(int argc, char **argv) {
     printf("SUM_BITS: 0x%08x\n", *(uint32_t*)&h_sum);
     printf("WROTE: %s\n", outpath);
 
-    cudaFree(d_in); cudaFree(d_sum);
+    cudaFree(d_in); cudaFree(d_out);
     free(host_in);
     return 0;
 }
