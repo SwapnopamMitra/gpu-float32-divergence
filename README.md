@@ -1,12 +1,12 @@
 # gpu-float32-divergence
 
-Independent harness for reproducing output divergence in float32 computation across commodity hardware.
+Independent harness for reproducing output divergence in float32 computation across execution paths and thread schedules on NVIDIA GPUs.
 
 > **Correction Notice (November 2, 2026)**
 >
 > An earlier version of the CPU harness (`divergence_demo.sh`) in this repository was missing the `gcc` compilation step. It executed the Python generation and terminal printing, but it did not execute the compiled float32 C math.
 >
-> The script was fixed and the test was rerun across glibc 2.31 (Ubuntu 20.04), 2.35 (Ubuntu 22.04), and 2.39 (Ubuntu 24.04) on the same Intel i5 host. The output was identical on all three (`b73b2b34...`). **The CPU divergence claim is retracted.** The C math for this specific dataset is stable across these glibc environments.
+> The script was fixed and the test was rerun across glibc 2.31 (Ubuntu 20.04), 2.35 (Ubuntu 22.04), and 2.39 (Ubuntu 24.04) on the same Intel i5 host. The output was identical on all three (`b73b2b34...`). **The original CPU divergence claim is retracted.** The C math for this specific dataset is stable across these glibc environments on a single host. Whether different CPU models diverge remains untested.
 >
 > The historical CPU manifests remain in the `historical/` directory for record only. The divergence they showed was likely caused by the harness fault, not hardware.
 >
@@ -125,7 +125,7 @@ On the same GPU, the FMA and fast-math kernels produce different hashes when the
 
 ### Atomic reduction
 
-Non-deterministic at 1,000,000 elements. On the RTX 3050, 10 runs produced 9 unique hashes (`cuda/atomic_hashes.txt`). On the Tesla T4, 10 runs produced 10 unique hashes (`cuda/colab_atomic_hashes.txt`). The atomic test was run on the T4 host `fcd2464a08ac`, which is one of the two T4 sessions recorded as `Colab_gpu1` and `Colab_gpu2` in the manifests. The manifests were generated across two T4 sessions and the local RTX 3050.
+Non-deterministic at 1,000,000 elements. On the RTX 3050, 10 runs produced 9 unique hashes (`cuda/atomic_hashes.txt`). On the Tesla T4, 10 runs produced 10 unique hashes (`cuda/colab_atomic_hashes.txt`). The atomic test was run on the T4 host `fcd2464a08ac`. The manifests were generated from two separate Colab T4 sessions.
 
 The atomic test was run on November 3, 2026 (IST; the host clock header in the hashes file reads November 2, 2026, UTC).
 
@@ -248,7 +248,7 @@ The `reduction_atomic` warning compares one run per machine of a non-determinist
 2. Copy the resulting `cuda/manifests/manifest_*.json` into `cuda/manifests/`.
 3. Re-run `compare_cuda_runs.py` from `cuda/`.
 
-Hardware diversity is the point. Different GPU families (Turing vs Ampere) are covered. Ada, Hopper and non-NVIDIA GPUs are not.
+Additional GPU families are useful as extra evidence that the deterministic kernels stay identical across hardware. Ada, Hopper and non-NVIDIA GPUs are not.
 
 ---
 
