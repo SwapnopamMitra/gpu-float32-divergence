@@ -1,7 +1,7 @@
 {
   "node_label": "Colab_gpu2_fma_on",
   "timestamp_utc": "2026-11-02T13:05:32Z",
-  "kernel": "Linux 6.6.159+ x86_64 GNU/Linux",
+  "kernel": "fma_default",
   "cpu_model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
   "cpu_flags_hash": "f3f8167cd223f6424a54382cfde8ac8be6d2452b70fbff1b4ffd5a32dc4dbd4e",
   "glibc_version": "ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39",

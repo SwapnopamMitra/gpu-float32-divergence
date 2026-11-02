@@ -17,16 +17,16 @@ else
     echo ""
 fi
 
-if [ ! -f test.bin ]; then
-    if [ -f ../test.bin ]; then
-        cp ../test.bin test.bin
+if [ ! -f big_test.bin ]; then
+    if [ -f ../big_test.bin ]; then
+        cp ../big_test.bin big_test.bin
     else
-        echo "ERROR: test.bin not found."
+        echo "ERROR: big_test.bin not found."
         exit 1
     fi
 fi
 
-./divergence_demo_cuda.sh test.bin output
+./divergence_demo_cuda.sh big_test.bin output_big
 
 echo ""
 echo "=== Building manifests ==="
@@ -35,7 +35,7 @@ echo ""
 NODE_LABEL=$(hostname | tr -d '.-')
 mkdir -p manifests
 
-INPUT_HASH=$(sha256sum test.bin | cut -d' ' -f1)
+INPUT_HASH=$(sha256sum big_test.bin | cut -d' ' -f1)
 GPU_MODEL=$(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)
 CUDA_VER=$(nvcc --version 2>/dev/null | grep release | sed 's/.*release //' | cut -d, -f1 || echo "unknown")
 COMPUTE_CAP=$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader 2>/dev/null | head -1 || echo "unknown")
@@ -53,8 +53,8 @@ emit_manifest() {
     case "$kernel_name" in
         fma_on)  binname="fma_default" ;;
         fma_off) binname="fma_no_fma" ;;
-        ftz_on)  binname="ftz_on" ;;
-        ftz_off) binname="ftz_off" ;;
+        fast_on)  binname="fast_on" ;;
+        fast_off) binname="fast_off" ;;
         red_tree)   binname="reduction_tree" ;;
         red_atomic) binname="reduction_atomic" ;;
     esac
@@ -77,7 +77,7 @@ emit_manifest() {
   "binary_name": "${binname}",
   "binary_sha256": "${binhash}",
   "nvcc_flags": "${flags}",
-  "input_file": "test.bin",
+  "input_file": "big_test.bin",
   "input_sha256": "${INPUT_HASH}",
   "result_file": "${outfile}",
   "raw_output_sha256": "${outhash}"
@@ -85,12 +85,12 @@ emit_manifest() {
 EOF
 }
 
-emit_manifest "gpu_fma_on"  "fma_on"  "-O2 fat -DUSE_FMA"     "output/fma_on.bin"
-emit_manifest "gpu_fma_off" "fma_off" "-O2 fat --fmad=false" "output/fma_off.bin"
-emit_manifest "gpu_ftz_on"  "ftz_on"  "-O2 fat -DUSE_FAST"    "output/ftz_on.bin"
-emit_manifest "gpu_ftz_off" "ftz_off" "-O2 fat"               "output/ftz_off.bin"
-emit_manifest "gpu_red_tree"   "red_tree"   "fat -DTREE_REDUCTION"   "output/reduction_tree.bin"
-emit_manifest "gpu_red_atomic" "red_atomic" "fat -DATOMIC_REDUCTION" "output/reduction_run_1.bin"
+emit_manifest "gpu_fma_on"  "fma_on"  "-O2 fat -DUSE_FMA"     "output_big/fma_on.bin"
+emit_manifest "gpu_fma_off" "fma_off" "-O2 fat --fmad=false" "output_big/fma_off.bin"
+emit_manifest "gpu_fast_on" "fast_on" "-O2 fat -DUSE_FAST"    "output_big/fast_on.bin"
+emit_manifest "gpu_fast_off" "fast_off" "-O2 fat"             "output_big/fast_off.bin"
+emit_manifest "gpu_red_tree"   "red_tree"   "fat -DTREE_REDUCTION"   "output_big/reduction_tree.bin"
+emit_manifest "gpu_red_atomic" "red_atomic" "fat -DATOMIC_REDUCTION" "output_big/reduction_run_1.bin"
 
 echo "=== Manifests written ==="
 ls -la manifests/

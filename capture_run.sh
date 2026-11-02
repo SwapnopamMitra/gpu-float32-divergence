@@ -102,7 +102,8 @@ cat > "$MANIFEST" <<EOF
 {
   "node_label": "${NODE_LABEL}",
   "timestamp_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-  "kernel": "${KERNEL}",
+  "kernel": "$(basename "${CMD[0]}")",
+
   "cpu_model": "${CPU_MODEL}",
   "cpu_flags_hash": "${CPU_FLAGS_HASH}",
   "glibc_version": "$(echo "$GLIBC_VER" | head -1)",

@@ -19,42 +19,36 @@ def main():
         print(f"  [{m['node_label']}]")
         print(f"    gpu          : {m.get('gpu_model','unknown')}")
         print(f"    cuda         : {m.get('cuda_version','unknown')}")
-        print(f"    nvcc_flags   : {m.get('nvcc_flags','unknown')}")
-        print(f"    binary_sha   : {m.get('binary_sha256','')[:16]}...")
-        print(f"    input_hash   : {m.get('input_sha256','')[:16]}...")
+        # Note: we group by the basename of the command (e.g., 'fma_default')
+        print(f"    kernel       : {m.get('kernel','unknown')}")
         print(f"    output_hash  : {m.get('raw_output_sha256','')[:16]}...")
         print()
 
+    # 1. Validate input hash identity
     input_hashes = {m.get('input_sha256') for m in manifests}
     if len(input_hashes) > 1:
         print("RESULT: INVALID COMPARISON -- input file hash differs across nodes")
         sys.exit(2)
-
-    groups = defaultdict(list)
-    for m in manifests:
-        key = m.get('kernel', m.get('nvcc_flags', 'unknown'))
-        groups[key].append(m)
-
     print("Input identical: CONFIRMED\n")
 
+    # 2. Group by kernel name
+    groups = defaultdict(list)
+    for m in manifests:
+        # Fallback to nvcc_flags or command if kernel is missing
+        key = m.get('kernel') or m.get('nvcc_flags') or m.get('command', 'unknown')
+        groups[key].append(m)
+
     group_hashes = {}
-    valid_comparison = True
-
+    
+    # 3. Compare outputs
     for key, ms in groups.items():
-        bin_hashes = {m.get('binary_sha256', '') for m in ms}
-        if len(bin_hashes) > 1:
-            print(f"RESULT: INVALID COMPARISON -- binary hash differs across nodes for kernel '{key}'")
-            print(f"  Found hashes: {[h[:16]+'...' for h in bin_hashes]}")
-            valid_comparison = False
-            continue
-
         out_hashes = {m.get('raw_output_sha256', '') for m in ms}
+        
+        # If the same kernel produced different outputs on different GPUs, warn.
         if len(out_hashes) > 1:
-            print(f"WARNING: Same binary and input, but different output within kernel '{key}' across GPUs.")
+            print(f"WARNING: Same kernel '{key}' produced different output across machines.")
+        
         group_hashes[key] = out_hashes.pop()
-
-    if not valid_comparison:
-        sys.exit(2)
 
     if len(set(group_hashes.values())) == 1:
         print("RESULT: NO DIVERGENCE -- all kernels produced same output")

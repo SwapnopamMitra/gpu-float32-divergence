@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-INPUT="${1:-test.bin}"
-OUTDIR="${2:-output}"
+INPUT="${1:-big_test.bin}"
+OUTDIR="${2:-output_big}"
 
 mkdir -p "$OUTDIR"
 
@@ -43,21 +43,17 @@ echo ""
 echo "[3/3] Reduction order (10 runs)..."
 for i in $(seq 1 10); do
     ./bin/reduction_atomic "$INPUT" "$OUTDIR/reduction_run_$i.bin" >/dev/null
+    ./bin/reduction_tree   "$INPUT" "$OUTDIR/tree_run_$i.bin"      >/dev/null
 done
-./bin/reduction_tree "$INPUT" "$OUTDIR/reduction_tree.bin" >/dev/null
 
-HASH_TREE=$(sha256sum "$OUTDIR/reduction_tree.bin" | cut -d' ' -f1)
+sha256sum "$OUTDIR"/reduction_run_*.bin > "$OUTDIR/atomic_hashes.txt"
+sha256sum "$OUTDIR"/tree_run_*.bin      > "$OUTDIR/tree_hashes.txt"
 
-ATOMIC_HASHES=$(for i in $(seq 1 10); do
-    sha256sum "$OUTDIR/reduction_run_$i.bin" | cut -d' ' -f1
-done | sort -u)
+ATOMIC_UNIQUE=$(cut -d' ' -f1 "$OUTDIR/atomic_hashes.txt" | sort -u | wc -l)
+TREE_UNIQUE=$(cut -d' ' -f1 "$OUTDIR/tree_hashes.txt" | sort -u | wc -l)
 
-UNIQUE_HASHES=$(echo "$ATOMIC_HASHES" | wc -l)
-HASH_ATOMIC_FIRST=$(echo "$ATOMIC_HASHES" | head -n 1)
-
-echo "  Tree reduction:   $HASH_TREE"
-echo "  Atomic reduction: $HASH_ATOMIC_FIRST"
-echo "  Atomic (10 runs): $UNIQUE_HASHES unique hash(es)"
+echo "  Tree reduction:   $TREE_UNIQUE unique hashes / 10 runs"
+echo "  Atomic reduction: $ATOMIC_UNIQUE unique hashes / 10 runs"
 echo ""
 
 echo "=== Summary ==="
@@ -74,12 +70,16 @@ else
     echo "Fast vs accurate:  no divergence"
 fi
 
-if [ "$UNIQUE_HASHES" -gt 1 ]; then
-    echo "Reduction order:   DIVERGENCE ($UNIQUE_HASHES unique)"
-elif [ "$HASH_TREE" != "$HASH_ATOMIC_FIRST" ]; then
-    echo "Reduction order:   DIVERGENCE (Tree != Atomic)"
+if [ "$ATOMIC_UNIQUE" -gt 1 ]; then
+    echo "Atomic reduction:  NON-DETERMINISTIC ($ATOMIC_UNIQUE unique hashes)"
 else
-    echo "Reduction order:   no divergence (Tree == Atomic)"
+    echo "Atomic reduction:  deterministic ($ATOMIC_UNIQUE unique hash)"
+fi
+
+if [ "$TREE_UNIQUE" -gt 1 ]; then
+    echo "Tree reduction:    NON-DETERMINISTIC ($TREE_UNIQUE unique hashes)"
+else
+    echo "Tree reduction:    deterministic ($TREE_UNIQUE unique hash)"
 fi
 
 echo ""
