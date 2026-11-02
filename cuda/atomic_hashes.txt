@@ -1,3 +1,7 @@
+# Generated on: Prime (NVIDIA GeForce RTX 3050 6GB)
+# Command: for i in $(seq 1 10); do ./bin/reduction_atomic big_test.bin output_big/reduction_run_$i.bin; sha256sum output_big/reduction_run_$i.bin >> atomic_hashes.txt; done
+
+
 32abb57124802db03b0f002f48879f2f141c248840fda782d9a31bae1de9069c  output_big/reduction_run_1.bin
 32abb57124802db03b0f002f48879f2f141c248840fda782d9a31bae1de9069c  output_big/reduction_run_10.bin
 64ccbbcc12c58112cc9f671c710bff8fd3404581745f2ae687bcb5b7dda64bb5  output_big/reduction_run_2.bin
