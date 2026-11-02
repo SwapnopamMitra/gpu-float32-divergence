@@ -1,7 +1,3 @@
-# Makefile — fat binary for cross-architecture testing
-# Contains SASS for sm_75 (Turing/T4) and sm_86 (Ampere/RTX 3050)
-# plus PTX fallback. Same binary file runs on both.
-
 NVCC       := nvcc
 NVCC_FLAGS := -O2 -diag-suppress 1650 \
               -gencode arch=compute_75,code=sm_75 \
@@ -13,8 +9,8 @@ NVCC_FLAGS := -O2 -diag-suppress 1650 \
 all: dirs \
      bin/fma_default \
      bin/fma_no_fma \
-     bin/ftz_on \
-     bin/ftz_off \
+     bin/fast_on \
+     bin/fast_off \
      bin/reduction_tree \
      bin/reduction_atomic
 
@@ -27,10 +23,10 @@ bin/fma_default: kernels/fma_vs_no_fma.cu
 bin/fma_no_fma: kernels/fma_vs_no_fma.cu
 	$(NVCC) $(NVCC_FLAGS) --fmad=false -o $@ $<
 
-bin/ftz_on: kernels/ftz_subnormal.cu
+bin/fast_on: kernels/fast_vs_accurate.cu
 	$(NVCC) $(NVCC_FLAGS) -DUSE_FAST -o $@ $<
 
-bin/ftz_off: kernels/ftz_subnormal.cu
+bin/fast_off: kernels/fast_vs_accurate.cu
 	$(NVCC) $(NVCC_FLAGS) -o $@ $<
 
 bin/reduction_tree: kernels/reduction_order.cu
