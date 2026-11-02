@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 set -euo pipefail
 
 INPUT="${1:-test.bin}"
@@ -30,14 +29,14 @@ echo "  FMA on : $HASH_FMA_ON"
 echo "  FMA off: $HASH_FMA_OFF"
 echo ""
 
-# --- FTZ ---
-echo "[2/3] FTZ fast vs accurate..."
-./bin/ftz_on  "$INPUT" "$OUTDIR/ftz_on.bin"  >/dev/null
-./bin/ftz_off "$INPUT" "$OUTDIR/ftz_off.bin" >/dev/null
-HASH_FTZ_ON=$(sha256sum  "$OUTDIR/ftz_on.bin"  | cut -d' ' -f1)
-HASH_FTZ_OFF=$(sha256sum "$OUTDIR/ftz_off.bin" | cut -d' ' -f1)
-echo "  FTZ on : $HASH_FTZ_ON"
-echo "  FTZ off: $HASH_FTZ_OFF"
+# --- Fast vs Accurate ---
+echo "[2/3] Fast intrinsic vs accurate library..."
+./bin/fast_on  "$INPUT" "$OUTDIR/fast_on.bin"  >/dev/null
+./bin/fast_off "$INPUT" "$OUTDIR/fast_off.bin" >/dev/null
+HASH_FAST_ON=$(sha256sum  "$OUTDIR/fast_on.bin"  | cut -d' ' -f1)
+HASH_FAST_OFF=$(sha256sum "$OUTDIR/fast_off.bin" | cut -d' ' -f1)
+echo "  Fast on : $HASH_FAST_ON"
+echo "  Fast off: $HASH_FAST_OFF"
 echo ""
 
 # --- Reduction ---
@@ -56,8 +55,8 @@ echo "  Atomic (10 runs): $UNIQUE_HASHES unique hash(es)"
 echo ""
 
 echo "=== Summary ==="
-[ "$HASH_FMA_ON" != "$HASH_FMA_OFF" ] && echo "FMA vs non-FMA:  DIVERGENCE ✅" || echo "FMA vs non-FMA:  no divergence"
-[ "$HASH_FTZ_ON" != "$HASH_FTZ_OFF" ] && echo "FTZ on vs off:   DIVERGENCE ✅" || echo "FTZ on vs off:   no divergence"
-[ "$UNIQUE_HASHES" -gt 1 ] && echo "Reduction order: DIVERGENCE ✅ ($UNIQUE_HASHES unique)" || echo "Reduction order: no divergence ($UNIQUE_HASHES unique)"
+[ "$HASH_FMA_ON" != "$HASH_FMA_OFF" ] && echo "FMA vs non-FMA:    DIVERGENCE" || echo "FMA vs non-FMA:    no divergence"
+[ "$HASH_FAST_ON" != "$HASH_FAST_OFF" ] && echo "Fast vs accurate:  DIVERGENCE" || echo "Fast vs accurate:  no divergence"
+[ "$UNIQUE_HASHES" -gt 1 ] && echo "Reduction order:   DIVERGENCE ($UNIQUE_HASHES unique)" || echo "Reduction order:   no divergence ($UNIQUE_HASHES unique)"
 echo ""
 echo "Outputs written to: $OUTDIR/"
