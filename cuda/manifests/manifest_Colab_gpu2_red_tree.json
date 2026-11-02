@@ -1,0 +1,21 @@
+{
+  "node_label": "Colab_gpu2_red_tree",
+  "timestamp_utc": "2026-11-02T12:11:24Z",
+  "kernel": "Linux 6.6.159+ x86_64 GNU/Linux",
+  "cpu_model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+  "cpu_flags_hash": "f3f8167cd223f6424a54382cfde8ac8be6d2452b70fbff1b4ffd5a32dc4dbd4e",
+  "glibc_version": "ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39",
+  "gpu_model": "Tesla T4",
+  "cuda_version": "13.0",
+  "command": "./bin/reduction_tree big_test.bin output_big/reduction_tree.bin ",
+  "binary_path": "./bin/reduction_tree",
+  "binary_sha256": "64e9d34a063d3c22cd442bf44b6c99b2d11b4d46ca4b9a9113b9f7c9d987d744",
+  "input_file": "big_test.bin",
+  "input_sha256": "606718c45400af4047e4a2cb9f1e2ba31d688f2aa19fbd2ff6f6a8d2ea1634e7",
+  "elapsed_seconds": ".242992188",
+  "result_kind": "artifact_file",
+  "result_file": "artifact_Colab_gpu2_red_tree_reduction_tree.bin",
+  "raw_output_sha256": "37d5c6b3b3f3bcb79850af20a91cf135019b6104e28095be37a4486bd41725e8",
+  "stdout_file": "output_Colab_gpu2_red_tree.stdout",
+  "stdout_sha256": "0af811ae143ba15db621a3bc3f486ae6a5a3fd52588570135b6abe0c991f72fe"
+}

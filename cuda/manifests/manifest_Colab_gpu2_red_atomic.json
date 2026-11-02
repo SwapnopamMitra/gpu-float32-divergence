@@ -1,0 +1,21 @@
+{
+  "node_label": "Colab_gpu2_red_atomic",
+  "timestamp_utc": "2026-11-02T12:11:25Z",
+  "kernel": "Linux 6.6.159+ x86_64 GNU/Linux",
+  "cpu_model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+  "cpu_flags_hash": "f3f8167cd223f6424a54382cfde8ac8be6d2452b70fbff1b4ffd5a32dc4dbd4e",
+  "glibc_version": "ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39",
+  "gpu_model": "Tesla T4",
+  "cuda_version": "13.0",
+  "command": "./bin/reduction_atomic big_test.bin output_big/reduction_run_1.bin ",
+  "binary_path": "./bin/reduction_atomic",
+  "binary_sha256": "7065ecf6ab5a97877134201e27023d2a98106aa67d496210e76c0442edad3880",
+  "input_file": "big_test.bin",
+  "input_sha256": "606718c45400af4047e4a2cb9f1e2ba31d688f2aa19fbd2ff6f6a8d2ea1634e7",
+  "elapsed_seconds": ".243861653",
+  "result_kind": "artifact_file",
+  "result_file": "artifact_Colab_gpu2_red_atomic_reduction_run_1.bin",
+  "raw_output_sha256": "7e47d2ba70c867c26716384bdbbea86c57501da0a4c4b7a4858774be2e6186bb",
+  "stdout_file": "output_Colab_gpu2_red_atomic.stdout",
+  "stdout_sha256": "f170b4c45a85f8c20ae9440bbfee42ea7a0e26a8704c09721d355530862d6c22"
+}

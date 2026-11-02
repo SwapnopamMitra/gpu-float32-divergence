@@ -1,0 +1,21 @@
+{
+  "node_label": "Prime_gpu_fma_on",
+  "timestamp_utc": "2026-11-02T12:06:51Z",
+  "kernel": "Linux 6.6.87.2-microsoft-standard-WSL2 x86_64 GNU/Linux",
+  "cpu_model": "12th Gen Intel(R) Core(TM) i5-12450HX",
+  "cpu_flags_hash": "30b1dc55582542703bd2fa559c340863ba6780fe0104b54e828092f1897ad37c",
+  "glibc_version": "ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39",
+  "gpu_model": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "cuda_version": "13.0",
+  "command": "./bin/fma_default big_test.bin output_big/fma_on.bin ",
+  "binary_path": "./bin/fma_default",
+  "binary_sha256": "c08dde83e8194ab1b196f5586c03a006e93f0112087932bd5664cc7194554d98",
+  "input_file": "big_test.bin",
+  "input_sha256": "606718c45400af4047e4a2cb9f1e2ba31d688f2aa19fbd2ff6f6a8d2ea1634e7",
+  "elapsed_seconds": ".308495660",
+  "result_kind": "artifact_file",
+  "result_file": "artifact_Prime_gpu_fma_on_fma_on.bin",
+  "raw_output_sha256": "5b4f9db9a65ceccc61532ce71a9dcaf1e85f25d93fb5038e12d676076ae1e632",
+  "stdout_file": "output_Prime_gpu_fma_on.stdout",
+  "stdout_sha256": "541f3a2d32f191264fa766555d8c24aca05839bd3610f5b0796456cb4f17e066"
+}

@@ -1,0 +1,21 @@
+{
+  "node_label": "Colab_gpu1_fast_on",
+  "timestamp_utc": "2026-11-02T12:11:47Z",
+  "kernel": "Linux 6.6.159+ x86_64 GNU/Linux",
+  "cpu_model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+  "cpu_flags_hash": "f3f8167cd223f6424a54382cfde8ac8be6d2452b70fbff1b4ffd5a32dc4dbd4e",
+  "glibc_version": "ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39",
+  "gpu_model": "Tesla T4",
+  "cuda_version": "13.0",
+  "command": "./bin/fast_on big_test.bin output_big/fast_on.bin ",
+  "binary_path": "./bin/fast_on",
+  "binary_sha256": "24c72dbe5fe7434287cbff9e6cff9df6661c52502708644f44a2e615cd16150e",
+  "input_file": "big_test.bin",
+  "input_sha256": "606718c45400af4047e4a2cb9f1e2ba31d688f2aa19fbd2ff6f6a8d2ea1634e7",
+  "elapsed_seconds": ".244051539",
+  "result_kind": "artifact_file",
+  "result_file": "artifact_Colab_gpu1_fast_on_fast_on.bin",
+  "raw_output_sha256": "743d2d5f940a7fc62aeeb3cd94b2d6908d2b01c1a7d64ccf596471be4460a59d",
+  "stdout_file": "output_Colab_gpu1_fast_on.stdout",
+  "stdout_sha256": "1815cc828a98e8371ec81f98eb21d68f46528a237b9526aa4379a5c91c35bdaf"
+}

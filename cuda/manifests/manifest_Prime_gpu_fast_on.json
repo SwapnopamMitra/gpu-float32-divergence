@@ -1,0 +1,21 @@
+{
+  "node_label": "Prime_gpu_fast_on",
+  "timestamp_utc": "2026-11-02T12:06:52Z",
+  "kernel": "Linux 6.6.87.2-microsoft-standard-WSL2 x86_64 GNU/Linux",
+  "cpu_model": "12th Gen Intel(R) Core(TM) i5-12450HX",
+  "cpu_flags_hash": "30b1dc55582542703bd2fa559c340863ba6780fe0104b54e828092f1897ad37c",
+  "glibc_version": "ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39",
+  "gpu_model": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "cuda_version": "13.0",
+  "command": "./bin/fast_on big_test.bin output_big/fast_on.bin ",
+  "binary_path": "./bin/fast_on",
+  "binary_sha256": "305e0e92b59fd02c8e3dd46b925149aca6561243c4e97e90ca5fedcd813520b8",
+  "input_file": "big_test.bin",
+  "input_sha256": "606718c45400af4047e4a2cb9f1e2ba31d688f2aa19fbd2ff6f6a8d2ea1634e7",
+  "elapsed_seconds": ".283289405",
+  "result_kind": "artifact_file",
+  "result_file": "artifact_Prime_gpu_fast_on_fast_on.bin",
+  "raw_output_sha256": "743d2d5f940a7fc62aeeb3cd94b2d6908d2b01c1a7d64ccf596471be4460a59d",
+  "stdout_file": "output_Prime_gpu_fast_on.stdout",
+  "stdout_sha256": "1815cc828a98e8371ec81f98eb21d68f46528a237b9526aa4379a5c91c35bdaf"
+}

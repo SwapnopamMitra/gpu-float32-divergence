@@ -1,0 +1,21 @@
+{
+  "node_label": "Colab_gpu2_fma_off",
+  "timestamp_utc": "2026-11-02T12:11:23Z",
+  "kernel": "Linux 6.6.159+ x86_64 GNU/Linux",
+  "cpu_model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+  "cpu_flags_hash": "f3f8167cd223f6424a54382cfde8ac8be6d2452b70fbff1b4ffd5a32dc4dbd4e",
+  "glibc_version": "ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39",
+  "gpu_model": "Tesla T4",
+  "cuda_version": "13.0",
+  "command": "./bin/fma_no_fma big_test.bin output_big/fma_off.bin ",
+  "binary_path": "./bin/fma_no_fma",
+  "binary_sha256": "53618a3b4fcfce344e695c04dedb6ea014c5b4b123c91236929a0a90480789f4",
+  "input_file": "big_test.bin",
+  "input_sha256": "606718c45400af4047e4a2cb9f1e2ba31d688f2aa19fbd2ff6f6a8d2ea1634e7",
+  "elapsed_seconds": ".239103175",
+  "result_kind": "artifact_file",
+  "result_file": "artifact_Colab_gpu2_fma_off_fma_off.bin",
+  "raw_output_sha256": "80d7301c2233e5d749b400f6285d1d4900a28adccc62e02fc83576cfd62d0c1d",
+  "stdout_file": "output_Colab_gpu2_fma_off.stdout",
+  "stdout_sha256": "5cfdeaba49bf8f6d446573b2f6c8316487c40d8c89b125d9d4c2131b79432be4"
+}
