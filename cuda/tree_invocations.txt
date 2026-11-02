@@ -1,3 +1,6 @@
+# Generated on: Prime (NVIDIA GeForce RTX 3050 6GB)
+# Command: for i in $(seq 1 10); do ./bin/reduction_tree big_test.bin output_big/tree_run_$i.bin; sha256sum output_big/tree_run_$i.bin >> tree_hashes.txt; done
+
 Run 1: 37d5c6b3b3f3bcb79850af20a91cf135019b6104e28095be37a4486bd41725e8
 Run 2: 37d5c6b3b3f3bcb79850af20a91cf135019b6104e28095be37a4486bd41725e8
 Run 3: 37d5c6b3b3f3bcb79850af20a91cf135019b6104e28095be37a4486bd41725e8
