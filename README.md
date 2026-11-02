@@ -15,11 +15,11 @@ divergence findings on real hardware.
 
 The manifests record two independent findings:
 
-**CPU finding — hardware-dependent divergence.**
+**CPU finding -- hardware-dependent divergence.**
 Six distinct CPU configurations, same binary hash, same input hash,
 **six different output hashes**.
 
-**GPU finding — path-dependent divergence.**
+**GPU finding -- path-dependent divergence.**
 Two GPU architectures (Tesla T4 sm_75, RTX 3050 sm_86), six different
 kernels. Same kernel across GPUs produces identical output. Different
 kernels on the same GPU produce different output.
@@ -34,7 +34,7 @@ The manifests are the record. The scripts reproduce the conditions.
 This repository does not contain, reference, or depend upon any
 canonicalization method, any external tool, or any resolution logic.
 If canonical hashes or tool-specific outputs appear in other published
-material, that is where they belong — not here.
+material, that is where they belong -- not here.
 
 No canonicalization logic, no SPCMP reference, no resolution method
 appears in this repository. If canonical hashes appear in other
@@ -52,21 +52,21 @@ beyond what the Makefile declares.
 divergence-verifier/
 ├── README.md
 ├── LICENSE
-├── capture_run.sh                  — fingerprints binary + input + output, writes manifest
-├── compare_runs.py                 — collects CPU manifests, classifies the result
-├── test.bin                        — CPU divergence corpus
-├── divergence_demo.sh              — CPU divergence trigger
-├── run_divergence_test.sh          — one-command CPU runner
+├── capture_run.sh                  -- fingerprints binary + input + output, writes manifest
+├── compare_runs.py                 -- collects CPU manifests, classifies the result
+├── test.bin                        -- CPU divergence corpus
+├── divergence_demo.sh              -- CPU divergence trigger
+├── run_divergence_test.sh          -- one-command CPU runner
 │
-├── manifest_0e4e583760c2.json      — CPU manifests (root directory)
+├── manifest_0e4e583760c2.json      -- CPU manifests (root directory)
 ├── manifest_6e258a114c61.json
 ├── manifest_Prime.json
 ├── manifest_c2e68d2ae4f6.json
 ├── manifest_project40c8f81744b8444da370e811d81e6c86.json
 ├── manifest_second_pc.json
 │
-└── cuda/                           — GPU divergence harness
-    ├── Makefile                    — fat binary build (sm_75 + sm_86)
+└── cuda/                           -- GPU divergence harness
+    ├── Makefile                    -- fat binary build (sm_75 + sm_86)
     ├── kernels/
     │   ├── fma_vs_no_fma.cu
     │   ├── ftz_subnormal.cu
@@ -74,8 +74,8 @@ divergence-verifier/
     ├── divergence_demo_cuda.sh
     ├── compare_cuda_runs.py
     ├── run_cuda_divergence_test.sh
-    ├── build_fat_bundle.sh         — bundle for cross-machine transfer
-    ├── test.bin                    — GPU divergence corpus
+    ├── build_fat_bundle.sh         -- bundle for cross-machine transfer
+    ├── test.bin                    -- GPU divergence corpus
     └── manifests/
         ├── manifest_gpu_fma_on_rtx3050.json
         ├── manifest_gpu_fma_on_t4.json
@@ -119,10 +119,10 @@ Six nodes. Six different CPU configurations. Same binary, same input.
 |------|-----|-------|-------------|
 | Prime | Intel i5-12450HX | 2.39 | `b266807160a9ee69...` |
 | 0e4e583760c2 | Intel Xeon @ 2.20GHz | 2.39 | `8f172ee242809dbf...` |
-| 6e258a114c61 | Intel Xeon @ 2.00GHz | — | `7989a6b20cc566cd...` |
+| 6e258a114c61 | Intel Xeon @ 2.00GHz | -- | `7989a6b20cc566cd...` |
 | c2e68d2ae4f6 | AMD EPYC 7B13 | 2.35 | `44b36c0f3a01cc59...` |
-| project40c8... | AMD EPYC 7B13 | — | `a1b49047410b2620...` |
-| second_pc | Intel i5-1255U | — | `689c2e49eb09ec8b...` |
+| project40c8... | AMD EPYC 7B13 | -- | `a1b49047410b2620...` |
+| second_pc | Intel i5-1255U | -- | `689c2e49eb09ec8b...` |
 
 **Binary hash: identical across all six nodes** (`71cba87046d06afb...`).
 **Input hash: identical across all six nodes** (`e851cab68f6e2350...`).
@@ -207,9 +207,9 @@ after collecting all manifests there.
 
 | Result | Meaning |
 |--------|---------|
-| `INVALID COMPARISON` | Binary or input hash differs — test is void |
+| `INVALID COMPARISON` | Binary or input hash differs -- test is void |
 | `NO DIVERGENCE DETECTED` | Same binary, same input, same output |
-| `UNEXPLAINED DIVERGENCE — GENUINE FINDING` | Same binary, same input, different output |
+| `UNEXPLAINED DIVERGENCE -- GENUINE FINDING` | Same binary, same input, different output |
 
 ---
 
@@ -296,7 +296,7 @@ Loaded 6 node manifests:
 Binary identical: CONFIRMED
 Input identical:  CONFIRMED
 
-RESULT: UNEXPLAINED DIVERGENCE — GENUINE FINDING
+RESULT: UNEXPLAINED DIVERGENCE -- GENUINE FINDING
     8f172ee242809dbf...  <- ['0e4e583760c2']
     7989a6b20cc566cd...  <- ['6e258a114c61']
     b266807160a9ee69...  <- ['Prime']
@@ -332,7 +332,7 @@ Loaded 12 GPU manifests:
 
 Input identical: CONFIRMED
 
-RESULT: CUDA DIVERGENCE — GENUINE FINDING
+RESULT: CUDA DIVERGENCE -- GENUINE FINDING
 Same input, different compile flags -> different output.
 ```
 
