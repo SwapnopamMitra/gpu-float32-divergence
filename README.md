@@ -15,9 +15,11 @@ divergence findings on real hardware.
 
 The manifests record two independent findings:
 
-**CPU finding -- hardware-dependent divergence.**
+**CPU finding -- environment-dependent divergence.**
 Six distinct CPU configurations, same binary hash, same input hash,
-**six different output hashes**.
+**six different output hashes**. Notably, the two nodes running the same
+AMD EPYC 7B13 produce different hashes (due to differing glibc versions).
+Neither the CPU model nor the OS alone predicts the result.
 
 **GPU finding -- path-dependent divergence.**
 Two GPU architectures (Tesla T4 sm_75, RTX 3050 sm_86), six different
@@ -69,7 +71,7 @@ divergence-verifier/
     ├── Makefile                    -- fat binary build (sm_75 + sm_86)
     ├── kernels/
     │   ├── fma_vs_no_fma.cu
-    │   ├── ftz_subnormal.cu
+    │   ├── fast_vs_accurate.cu     -- (renamed from ftz_subnormal.cu)
     │   └── reduction_order.cu
     ├── divergence_demo_cuda.sh
     ├── compare_cuda_runs.py
@@ -104,7 +106,7 @@ and lets anyone reproduce the conditions. It does not diagnose the
 cause, propose a fix, or depend on any particular hardware, driver,
 or library version beyond what each manifest records.
 
-The CPU manifests record a hardware-dependent divergence finding.
+The CPU manifests record an environment-dependent divergence finding.
 The GPU manifests record a path-dependent divergence finding. These
 are separate findings with separate causes and should be cited
 separately.
@@ -113,7 +115,7 @@ separately.
 
 ## CPU finding
 
-Six nodes. Six different CPU configurations. Same binary, same input.
+Six nodes. Six different environment configurations. Same binary, same input.
 
 | Node | CPU | glibc | Output hash |
 |------|-----|-------|-------------|
@@ -128,6 +130,10 @@ Six nodes. Six different CPU configurations. Same binary, same input.
 **Input hash: identical across all six nodes** (`e851cab68f6e2350...`).
 **Output hash: six distinct values.**
 
+The two EPYC nodes differ across glibc versions, and every pair of nodes
+sharing a glibc version also differs. Neither the CPU nor the glibc
+version alone explains the result.
+
 ---
 
 ## GPU finding
@@ -138,15 +144,15 @@ Two GPUs. Six kernels. Same binary per kernel, same input.
 |--------|------------|-----------------------------|-----------------------------|
 | `fma_on` | `-O2 fat -DUSE_FMA` | `9abc1b84...` | `9abc1b84...` |
 | `fma_off` | `-O2 fat --fmad=false` | `c0d12da3...` | `c0d12da3...` |
-| `ftz_on` | `-O2 fat -DUSE_FAST` | `8a792baa...` | `8a792baa...` |
-| `ftz_off` | `-O2 fat` | `0accc3bb...` | `0accc3bb...` |
+| `fast_on` | `-O2 fat -DUSE_FAST` | `8a792baa...` | `8a792baa...` |
+| `fast_off` | `-O2 fat` | `0accc3bb...` | `0accc3bb...` |
 | `red_tree` | `fat -DTREE_REDUCTION` | `a2c70538...` | `a2c70538...` |
 | `red_atomic` | `fat -DATOMIC_REDUCTION` | `a2c70538...` | `a2c70538...` |
 
 **Same kernel across two GPU architectures: identical output.**
 **Different kernels on the same GPU: different output.**
 
-Note: `ftz_on` / `ftz_off` compare the fast intrinsic `__expf` against
+Note: `fast_on` / `fast_off` compare the fast intrinsic `__expf` against
 the accurate library function `expf`. These differ in both polynomial
 approximation and FTZ behavior; the label reflects the fast-math path,
 not an isolated FTZ toggle.
