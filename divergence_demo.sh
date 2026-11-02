@@ -90,3 +90,16 @@ int main() {
     
     return 0;
 }
+EOF
+
+gcc -O0 -o /tmp/float_test /tmp/float_test.c -lm
+/tmp/float_test
+
+if [ -f float_output.bin ]; then
+    FULL_HASH=$(sha256sum float_output.bin | cut -d' ' -f1)
+    echo "FULL_SHA256: $FULL_HASH"
+    echo "$FULL_HASH" > hash_output.txt
+else
+    echo "ERROR: No output generated"
+    exit 1
+fi
