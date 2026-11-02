@@ -1,8 +1,7 @@
 # Generated on: Google Colab Tesla T4
-# Hostname: fcd2464a08ac
-# Date: November 2, 2026
+# Hostname: fcd2464a08ac (this corresponds to Colab_gpu1 or Colab_gpu2 in the manifests)
+# Date: November 3, 2026
 # Command: for i in $(seq 1 10); do ./bin/reduction_atomic big_test.bin colab_atomic_$i.bin; sha256sum colab_atomic_$i.bin >> colab_atomic_hashes.txt; done
-
 
 f942ba67a066859dd6ccd00e633ae334e68be9b4363cb35ac9e0677d98245723  colab_atomic_1.bin
 268bd796dafd0e4c346dc2b00ec9a0989e0f8aff608a8d623362f40a372896c0  colab_atomic_2.bin

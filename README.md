@@ -113,7 +113,7 @@ Three machines: two Google Colab Tesla T4 instances and one local RTX 3050. Six 
 | `fast_on` | `-O2 fat -DUSE_FAST` | `743d2d5f...` | `743d2d5f...` |
 | `fast_off` | `-O2 fat` | `cbe5cea0...` | `cbe5cea0...` |
 | `reduction_tree` | `fat -DTREE_REDUCTION` | `37d5c6b3...` | `37d5c6b3...` (100 of 100 runs) |
-| `reduction_atomic` | `fat -DATOMIC_REDUCTION` | 10 unique / 10 runs (`colab_atomic_hashes.txt`) | 9 unique / 10 runs (`atomic_hashes.txt`) |
+| `reduction_atomic` | `fat -DATOMIC_REDUCTION` | 10 unique / 10 runs (`colab_atomic_hashes.txt`, host fcd2464a08ac) | 9 unique / 10 runs (`atomic_hashes.txt`, Prime) |
 
 ### Deterministic kernels
 
@@ -126,6 +126,8 @@ On the same GPU, the FMA and fast-math kernels produce different hashes when the
 ### Atomic reduction
 
 Non-deterministic at 1,000,000 elements. On the RTX 3050, 10 runs produced 9 unique hashes (`cuda/atomic_hashes.txt`). On the Tesla T4, 10 runs produced 10 unique hashes (`cuda/colab_atomic_hashes.txt`).
+
+The 10-run atomic test on Colab was run on host `fcd2464a08ac` on November 3, 2026 (IST; the host clock header in the hashes file reads November 2, 2026, UTC). The other T4 instance (`gpu2`) only contributed manifests for the deterministic kernels and a single atomic run.
 
 ### Tree reduction
 
