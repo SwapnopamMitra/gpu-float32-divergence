@@ -1,5 +1,3 @@
-
-
 #include <cstdio>
 #include <cstdint>
 #include <cstring>
@@ -19,8 +17,21 @@ __global__ void kernel_reduce(const float *in, float *out, int n) {
         __syncthreads();
     }
     if (tid == 0) atomicAdd(out, sdata[0]);
+    
 #elif defined(ATOMIC_REDUCTION)
-    if (i < n) atomicAdd(out, in[i]);
+    // Cast to volatile to force the compiler to actually emit the atomic instruction
+    // and not optimize the floating-point race condition away.
+    volatile float* v_out = out;
+    
+    if (i < n) {
+        // Introduce microscopic scheduling jitter based on thread/warp ID.
+        // This forces different blocks to arrive at the memory controller out of order.
+        if ((tid + blockIdx.x) % 32 == 0) {
+            __nanosleep(10); 
+        }
+        
+        atomicAdd((float*)v_out, in[i]);
+    }
 #endif
 }
 
