@@ -46,17 +46,41 @@ for i in $(seq 1 10); do
 done
 ./bin/reduction_tree "$INPUT" "$OUTDIR/reduction_tree.bin" >/dev/null
 
-UNIQUE_HASHES=$(for i in $(seq 1 10); do
-    sha256sum "$OUTDIR/reduction_run_$i.bin" | cut -d' ' -f1
-done | sort -u | wc -l)
+HASH_TREE=$(sha256sum "$OUTDIR/reduction_tree.bin" | cut -d' ' -f1)
 
-echo "  Tree reduction:   $(sha256sum "$OUTDIR/reduction_tree.bin" | cut -d' ' -f1)"
+ATOMIC_HASHES=$(for i in $(seq 1 10); do
+    sha256sum "$OUTDIR/reduction_run_$i.bin" | cut -d' ' -f1
+done | sort -u)
+
+UNIQUE_HASHES=$(echo "$ATOMIC_HASHES" | wc -l)
+HASH_ATOMIC_FIRST=$(echo "$ATOMIC_HASHES" | head -n 1)
+
+echo "  Tree reduction:   $HASH_TREE"
+echo "  Atomic reduction: $HASH_ATOMIC_FIRST"
 echo "  Atomic (10 runs): $UNIQUE_HASHES unique hash(es)"
 echo ""
 
 echo "=== Summary ==="
-[ "$HASH_FMA_ON" != "$HASH_FMA_OFF" ] && echo "FMA vs non-FMA:    DIVERGENCE" || echo "FMA vs non-FMA:    no divergence"
-[ "$HASH_FAST_ON" != "$HASH_FAST_OFF" ] && echo "Fast vs accurate:  DIVERGENCE" || echo "Fast vs accurate:  no divergence"
-[ "$UNIQUE_HASHES" -gt 1 ] && echo "Reduction order:   DIVERGENCE ($UNIQUE_HASHES unique)" || echo "Reduction order:   no divergence ($UNIQUE_HASHES unique)"
+
+if [ "$HASH_FMA_ON" != "$HASH_FMA_OFF" ]; then
+    echo "FMA vs non-FMA:    DIVERGENCE"
+else
+    echo "FMA vs non-FMA:    no divergence"
+fi
+
+if [ "$HASH_FAST_ON" != "$HASH_FAST_OFF" ]; then
+    echo "Fast vs accurate:  DIVERGENCE"
+else
+    echo "Fast vs accurate:  no divergence"
+fi
+
+if [ "$UNIQUE_HASHES" -gt 1 ]; then
+    echo "Reduction order:   DIVERGENCE ($UNIQUE_HASHES unique)"
+elif [ "$HASH_TREE" != "$HASH_ATOMIC_FIRST" ]; then
+    echo "Reduction order:   DIVERGENCE (Tree != Atomic)"
+else
+    echo "Reduction order:   no divergence (Tree == Atomic)"
+fi
+
 echo ""
 echo "Outputs written to: $OUTDIR/"
